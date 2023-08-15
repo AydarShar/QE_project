@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @AfterEach
     public void closeWindow() {
-        Selenide.closeWindow(); // закрытие окна после каждого теста
+        Selenide.closeWindow(); // новая сессия для каждого теста
     }
 
     @Test
@@ -41,8 +41,6 @@ import static org.junit.jupiter.api.Assertions.*;
                 $x("//a[contains(@href,'https://mail.ru')]")
                         .shouldBe(visible)
                         .click());
-
-        Selenide.sleep(2000);
     }
 
     @Test
@@ -74,8 +72,6 @@ import static org.junit.jupiter.api.Assertions.*;
         step("Убедиться, что отображается погода в Казани", () -> {
             $x("//h1[text()='Прогноз погоды в Казани']")
                     .shouldBe(visible);});
-
-        Selenide.sleep(2000);
     }
 
     @Test
@@ -107,8 +103,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
         step("Проверить, что фоновый цвет header тёмный", () -> {
             assertEquals("rgba(25, 25, 26, 1)", colorValue);});
-
-        Selenide.sleep(2000);
     }
 
     @Test
@@ -134,14 +128,14 @@ import static org.junit.jupiter.api.Assertions.*;
                     .shouldBe(visible)
                     .click();});
 
-        Selenide.sleep(8000);
+        Selenide.sleep(4000);
 
         step("Переключиться на 2-ю вкладку браузера", () -> {
             switchTo().window("VK Добро - благотворительность в России - сервис добрых дел");});
 
         step("Кликнуть на кнопку \"Помочь сейчас\"", () -> {
             $x("//span[text()='Помочь сейчас']")
-                    .shouldHave(exist)
+                    .shouldBe(exist)
                     .click();});
 
         step("Переключиться на iframe", () -> {
@@ -151,8 +145,6 @@ import static org.junit.jupiter.api.Assertions.*;
         step("Проверить что элементы появившегося окна видны", () -> {
             $x("//div[child::h2[text()='Добавить платёж'] and child::span[text()='Кому вы хотите помочь']]")
                     .shouldBe(visible);});
-
-        Selenide.sleep(2000);
     }
 
     @Test
@@ -186,7 +178,7 @@ import static org.junit.jupiter.api.Assertions.*;
             switchTo().window(1);});
 
         step("Кликнуть на кнопку смены языка в правом верхнем углу", () -> {
-            $x("//button[contains(@class, 'header__change-language')]")
+            $x("//*[@id=\"__next\"]/header/div/div/form/button")
                     .shouldBe(visible)
                     .click();});
 
@@ -196,8 +188,6 @@ import static org.junit.jupiter.api.Assertions.*;
                     .getText();});
 
         assertEquals("Our projects", title);
-
-        Selenide.sleep(2000);
     }
 
     @Test
@@ -243,8 +233,5 @@ import static org.junit.jupiter.api.Assertions.*;
         step("Проверить что сообщение с подсказкой голосового помощника видно", () -> {
             $x("//span[contains(@class, 'marusia__balloon__text')]")
                     .shouldBe(visible);});
-
-        Selenide.sleep(2000);
-
     }
 }

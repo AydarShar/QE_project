@@ -13,16 +13,15 @@ public class MailPage {
 
     // Page object - в главном меню в header взят значок кубик Рубика в котором все проекты
     public SelenideElement cubeMenu() {
-        return $x("//div[contains(@class, 'ph-project svelte-a9o3e5')]");
+        return $x("//*[@id=\"ph-whiteline\"]/div/nav/button");
     }
+
 
     // Page elements - взяты элементы меню в кубике Рубика
     public static class CubeMenuElements {
 
         // Добро
-        public SelenideElement kindness() {
-            return $x("//a[contains(@href, 'https://trk.mail.ru/c/szuzz5?mt_sub1=mail.ru')]");
-        }
+        public SelenideElement kindness() { return $x("//span[contains(text(), 'Добро')]"); }
 
         // Задачи
         public SelenideElement tasks() {
@@ -30,8 +29,6 @@ public class MailPage {
         }
 
         // Смотреть все
-        public SelenideElement watchAll() {
-            return $x("//a[contains(@href, 'https://trk.mail.ru/c/lb9kv9?mt_sub1=mail.ru')]");
-        }
+        public SelenideElement watchAll() { return $x("//span[contains(text(), 'Смотреть все')]"); }
     }
 }
