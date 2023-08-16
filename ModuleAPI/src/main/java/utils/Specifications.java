@@ -7,6 +7,8 @@ import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
+import static io.qameta.allure.Allure.step;
+
 public class Specifications {
     public static RequestSpecification requestSpec(String url) {
         return new RequestSpecBuilder()
@@ -23,7 +25,7 @@ public class Specifications {
     }
 
     public static void installSpec(RequestSpecification request, ResponseSpecification response) {
-        RestAssured.requestSpecification = request;
-        RestAssured.responseSpecification = response;
+        step("RequestSpecification", () -> {RestAssured.requestSpecification = request;});
+        step("ResponseSpecification", () -> {RestAssured.responseSpecification = response;});
     }
 }
