@@ -25,7 +25,7 @@ public class Specifications {
     }
 
     public static void installSpec(RequestSpecification request, ResponseSpecification response) {
-        step("RequestSpecification", () -> {RestAssured.requestSpecification = request;});
-        step("ResponseSpecification", () -> {RestAssured.responseSpecification = response;});
+        step("Спецификация запроса", () -> {RestAssured.requestSpecification = request;});
+        step("Спецификация ответа", () -> {RestAssured.responseSpecification = response;});
     }
 }

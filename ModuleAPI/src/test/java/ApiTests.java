@@ -29,18 +29,18 @@ private static final String URL = "http://77.50.236.203:4880";
     @BeforeEach
     public void setup() {
         RestAssured.defaultParser = Parser.JSON;
-        step("Specification for authorization", () -> {
-        Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(202));});
+        step("Спецификации для авторизации", () ->
+                Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(202)));
 
         Login login = new Login("user@pflb.ru", "user");
-        token = given()
+        token = step("Получение токена для авторизации", () -> given()
                 .body(login)
                 .when()
                 .post("/login")
                 .then()
                 .extract()
                 .jsonPath()
-                .get("access_token");
+                .get("access_token"));
     }
 
     @Test
@@ -49,12 +49,11 @@ private static final String URL = "http://77.50.236.203:4880";
     @Description("Проверка возраста у user с фамилией Born")
     public void getUserAge() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(200));
-        step("GET/user запрос с проверкой в теле ответа", () -> {
-        return given()
+        step("GET/user запрос с проверкой в теле ответа", () -> given()
                 .when().get("/users")
                 .then()
                 .body("find{it.secondName=='Born'}.age",
-                        equalTo(30));});
+                        equalTo(30)));
     }
 
     @Test
@@ -65,31 +64,28 @@ private static final String URL = "http://77.50.236.203:4880";
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(201));
 
         UserRequest createUser =
-            step("Сбор user через builder", () -> {
-                return UserRequest.builder()
-                .firstName("David")
-                .secondName("Schwimmer")
-                .age(56).sex("MALE")
-                .money(BigDecimal.valueOf(130000.42))
-                .build();});
+            step("Сбор user через builder", UserRequest.builder()
+                    .firstName("David")
+                    .secondName("Schwimmer")
+                    .age(56).sex("MALE")
+                    .money(BigDecimal.valueOf(130000.42))::build);
 
         UserResponse userResponse =
-            step("POST запрос с собранным user", () -> {
-                return given()
+            step("POST запрос с собранным user", () -> given()
                 .headers("Authorization", "Bearer " + token)
                 .body(createUser)
                 .when()
                 .post("/user")
                 .then()
                 .extract()
-                .as(UserResponse.class);});
+                .as(UserResponse.class));
 
         System.out.println("Созданный user: " + userResponse);
 
         step("Проверяем, что созданный user не null и что значение firstName в запросе и ответе совпадают", () ->
-        {assertThat(userResponse).isNotNull()
+        assertThat(userResponse).isNotNull()
                 .extracting(UserResponse::getFirstName)
-                .isEqualTo(userResponse.getFirstName());});
+                .isEqualTo(userResponse.getFirstName()));
 
         return String.valueOf(userResponse.getId());
     }
@@ -100,12 +96,12 @@ private static final String URL = "http://77.50.236.203:4880";
     @Description("Проверяем, что ответ 204")
     public void deleteUser() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(204));
-        step("DELETE запрос с cуществующим id (id=createUser)", () -> {
+        step("DELETE запрос с cуществующим id (id=createUser)", () ->
             given()
                 .headers("Authorization", "Bearer " + token)
                 .when()
                 .delete("/user/" + createUser())
-                .then().log().all();});
+                .then().log().all());
     }
     @Test
     @Tag("users")
@@ -113,13 +109,12 @@ private static final String URL = "http://77.50.236.203:4880";
     @Description("Проверяем, что ответ 403")
     public void deleteUserError() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(403));
-        step("DELETE запрос с несуществующим id (id=5655)", () -> {
+        step("DELETE запрос с несуществующим id (id=5655)", () ->
             given()
                 .when()
                 .delete("/user/5655")
-                .then().log().all();});
+                .then().log().all());
     }
-
 
     @Test
     @Tag("cars")
@@ -128,21 +123,20 @@ private static final String URL = "http://77.50.236.203:4880";
     public void getCarsEngineType() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(200));
             List <CarResponse> cars =
-                step("GET cars запрос со списком машин", () -> {
-                 return given()
-                .when().get("/cars")
-                .then()
-                .extract()
-                .jsonPath().getList("", CarResponse.class);});
+                step("GET cars запрос со списком машин", () -> given()
+               .when().get("/cars")
+               .then()
+               .extract()
+               .jsonPath().getList("", CarResponse.class));
 
             List <BigDecimal> carsPrices =
-                    step("Получение списка цен каждой машины", () -> {
-                        return
-                                cars.stream().map(x->x.getPrice()).collect(Collectors.toList());});
+                    step("Получение списка цен каждой машины", () ->
+                            cars.stream().map(x->x.getPrice()).collect(Collectors.toList()));
 
-        step("Проверка, что список цен не пустой", () -> {assertNotNull(carsPrices);});
+        step("Проверка, что список цен не пустой", () ->
+                assertNotNull(carsPrices));
         step("Поиск и сравнение цены самой дорогой машины", () ->
-        {assertEquals(BigDecimal.valueOf(1.4004704E+9), carsPrices.stream().max(BigDecimal::compareTo).get());});
+                assertEquals(BigDecimal.valueOf(1.4004704E+9), carsPrices.stream().max(BigDecimal::compareTo).get()));
     }
 
     @Test
@@ -151,30 +145,26 @@ private static final String URL = "http://77.50.236.203:4880";
     @Description("Проверяем созданную машину")
     public void createCar() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(201));
-
-        CarRequest createCarRequest = step("Сбор машины через builder", () -> {
-            return CarRequest.builder()
+            CarRequest createCarRequest = step("Сбор машины через builder", () -> CarRequest.builder()
                 .engineType("Electric")
                 .mark("Mercedes-Benz")
                 .model("EQA")
                 .price(BigDecimal.valueOf(800000))
-                .build();});
+                .build());
 
-        CarResponse carResponse = step("POST запрос с собранной машиной", () -> {
-                return given()
+            CarResponse carResponse = step("POST запрос с собранной машиной", () -> given()
                 .headers("Authorization", "Bearer " + token)
                 .body(createCarRequest)
                 .when()
                 .post("/car")
                 .then()
                 .extract()
-                .as(CarResponse.class);});
+                .as(CarResponse.class));
 
         step("Проверяем, что созданная машина не null и что значение model в запросе и ответе совпадают", () ->
-        {assertThat(carResponse).isNotNull()
-                .extracting(CarResponse::getModel)
-                .isEqualTo(createCarRequest.getModel());});
-
+                assertThat(carResponse).isNotNull()
+                    .extracting(CarResponse::getModel)
+                    .isEqualTo(createCarRequest.getModel()));
     }
 
     @Test
@@ -184,29 +174,28 @@ private static final String URL = "http://77.50.236.203:4880";
     public void putCar() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(202));
 
-        CarRequest createCar = step("Сбор машины через builder", () -> {
-            return CarRequest.builder()
+            CarRequest createCar = step("Сбор машины через builder", () -> CarRequest.builder()
                 .engineType("Electric")
                 .mark("Infinity")
                 .model("Q70")
-                .price(BigDecimal.valueOf(420000)).build();});
+                .price(BigDecimal.valueOf(420000)).build());
 
 
-        CarResponse carResponse = step("PUT запрос с собранной машиной", () -> {
-            return given()
+            CarResponse carResponse = step("PUT запрос с собранной машиной", () -> given()
                 .headers("Authorization", "Bearer " + token)
                 .body(createCar)
                 .when().put("car/90")
                 .then()
                 .extract()
-                .as(CarResponse.class);});
+                .as(CarResponse.class));
 
         System.out.println(carResponse);
 
-        step("Проверка, что измененная машина не null", () -> {assertNotNull(carResponse);});
-        step("Сверяем значение id", () -> {assertEquals(90, carResponse.getId());});
-        step("Сверяем значение mark", () -> {assertEquals("Infinity", carResponse.getMark());});
+        step("Проверка, что измененная машина не null", () -> assertNotNull(carResponse));
+        step("Сверяем значение id", () -> assertEquals(90, carResponse.getId()));
+        step("Сверяем значение mark", () -> assertEquals("Infinity", carResponse.getMark()));
     }
+
     @Test
     @Tag("cars")
     @DisplayName("8. PUT/car/{carId} - целостное изменение объекта (409 ответ)")
@@ -214,19 +203,17 @@ private static final String URL = "http://77.50.236.203:4880";
     public void putCarError() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(409));
 
-        CarRequest createCar = step("Сбор машины через builder", () -> {
-                return CarRequest.builder()
+            CarRequest createCar = step("Сбор машины через builder", () -> CarRequest.builder()
                 .engineType("Electric")
                 .mark("AUDI")
                 .model("Q7")
-                .price(BigDecimal.valueOf(480000)).build();});
+                .price(BigDecimal.valueOf(480000)).build());
 
-        step("PUT запрос с собранной машиной", () -> {
-            given()
+            step("PUT запрос с собранной машиной", () -> given()
                 .headers("Authorization", "Bearer " + token)
                 .body(createCar)
                 .when().put("car/1")
-                .then().log().all();});
+                .then().log().all());
     }
 
     @Test
@@ -236,15 +223,14 @@ private static final String URL = "http://77.50.236.203:4880";
     public void getHousesWithArray() {
         Specifications.installSpec(Specifications.requestSpec(URL), Specifications.responseSpec(200));
 
-        HousesResponse[] houses = step("GET/houses запрос с массивом из домов", () -> {
-            return given()
+            HousesResponse[] houses = step("GET/houses запрос с массивом из домов", () -> given()
                 .headers("Authorization", "Bearer " + token)
                 .when().get("/houses")
                 .then()
                 .extract()
-                .as((Type) HousesResponse[].class);});
+                .as((Type) HousesResponse[].class));
 
-        step("Проверка, что массив домов не пустой", () -> {assertNotNull(houses);});
-        step("Проверка, что у 1-го дома 5 жильцов", () -> {assertEquals(5, houses[0].getLodgers().size());});
+        step("Проверка, что массив домов не пустой", () -> assertNotNull(houses));
+        step("Проверка, что у 1-го дома 5 жильцов", () -> assertEquals(5, houses[0].getLodgers().size()));
     }
 }
