@@ -31,207 +31,203 @@ import static org.junit.jupiter.api.Assertions.*;
 
         step("Открыть google.ru", () -> open("https://www.google.ru/"));
 
-        step("В поле ввода вставить \"mail\", нажать Enter", () -> {
-            $x("//textarea[contains(@title,'Поиск')]")
-                    .shouldBe(visible)
-                    .setValue("mail.ru")
-                    .pressEnter();});
+        step("В поле ввода вставить \"mail\", нажать Enter",
+                $x("//textarea[contains(@title,'Поиск')]")
+                .shouldBe(visible)
+                .setValue("mail.ru")::pressEnter);
 
         step("Найти сайт mail.ru, кликнуть по нему", () ->
                 $x("//a[contains(@href,'https://mail.ru')]")
-                        .shouldBe(visible)
-                        .click());
+                .shouldBe(visible)
+                .click());
     }
 
     @Test
     @DisplayName("2. Проверка отображения погоды в Казани")
     void weatherInKazan() {
 
-        step("Открыть страницу mail.ru", () -> {
-            open("https://mail.ru");});
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
 
-        step("Закрыть всплывающее окно", () -> {
-            new MailPage().closePopUp()
-                    .shouldBe(visible)
-                    .click();});
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
 
-        step("Кликнуть на блок с погодой", () -> {
-            $x("//div[@data-testid=\"weather\"]")
-                    .shouldBe(visible)
-                    .click();});
+        step("Кликнуть на блок с погодой", () ->
+                $x("//div[@data-testid=\"weather\"]")
+                .shouldBe(visible)
+                .click());
 
-        step("Переключиться на 2-ю вкладку браузера", () -> {
-            switchTo().window(1);});
+        step("Переключиться на 2-ю вкладку браузера", () ->
+                switchTo().window(1));
 
-        step("В поле ввода вставить \"Казань\", нажать Enter", () -> {
-            $x("//form[@action=\"/search/\"]//input[@type=\"text\"]")
-                    .shouldBe(visible)
-                    .setValue("Казань")
-                    .pressEnter();});
+        step("В поле ввода вставить \"Казань\", нажать Enter", () ->
+                $x("//form[@action=\"/search/\"]//input[@type=\"text\"]")
+                .shouldBe(visible)
+                .setValue("Казань")
+                .pressEnter());
 
-        step("Убедиться, что отображается погода в Казани", () -> {
-            $x("//h1[text()='Прогноз погоды в Казани']")
-                    .shouldBe(visible);});
+        step("Убедиться, что отображается погода в Казани", () ->
+                $x("//h1[text()='Прогноз погоды в Казани']")
+                .shouldBe(visible));
     }
 
     @Test
     @DisplayName("3. Проверка переключения на темную тему")
     void blackTheme() {
 
-        step("Открыть страницу mail.ru", () -> {
-            open("https://mail.ru");});
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
 
-        step("Закрыть всплывающее окно", () -> {
-            new MailPage().closePopUp()
-                    .shouldBe(visible)
-                    .click();});
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
 
-        step("Нажать на шестеренку в правом верхнем углу окна", () -> {
-            $x("//div[contains(@class, 'ph-settings svelte-1ke9xx5')]")
-                    .shouldBe(visible)
-                    .click();});
+        step("Нажать на шестеренку в правом верхнем углу окна", () ->
+                $x("//div[contains(@class, 'ph-settings svelte-1ke9xx5')]")
+                .shouldBe(visible)
+                .click());
 
-        step("В открывшемся окне настроек выбрать тёмную тему", () -> {
-            $x("//label[@for=\"choice-dark\"]")
-                    .shouldBe(visible)
-                    .click();});
+        step("В открывшемся окне настроек выбрать тёмную тему", () ->
+                $x("//label[@for=\"choice-dark\"]")
+                .shouldBe(visible)
+                .click());
 
-        String colorValue = step("Взять фоновый цвет header", () -> {
-            return $x("//div[contains(@class, 'headline headline_white')]")
-                    .shouldBe(visible)
-                    .getCssValue("background-color");});
+        String colorValue = step("Взять фоновый цвет header", () ->
+                $x("//div[contains(@class, 'headline headline_white')]")
+                .shouldBe(visible)
+                .getCssValue("background-color"));
 
-        step("Проверить, что фоновый цвет header тёмный", () -> {
-            assertEquals("rgba(25, 25, 26, 1)", colorValue);});
+        step("Проверить, что фоновый цвет header тёмный", () ->
+                assertEquals("rgba(25, 25, 26, 1)", colorValue));
     }
 
     @Test
     @DisplayName("4. Проверка открытия окна для пожертвования")
     void donationWindow() {
 
-        step("Открыть страницу mail.ru", () -> {
-            open("https://mail.ru");});
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
 
-        step("Закрыть всплывающее окно", () -> {
-            new MailPage().closePopUp()
-                    .shouldBe(visible)
-                    .click();});
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
 
-        step("Кликнуть на значок кубик Рубика в главном меню", () -> {
-            new MailPage().cubeMenu()
-                    .shouldBe(visible)
-                    .click();});
+        step("Кликнуть на значок кубик Рубика в главном меню", () ->
+                new MailPage().cubeMenu()
+                .shouldBe(visible)
+                .click());
 
-        step("В открывшемся окне меню кликнуть на \"Добро\"", () -> {
-            new MailPage.CubeMenuElements()
-                    .kindness()
-                    .shouldBe(visible)
-                    .click();});
+        step("В открывшемся окне меню кликнуть на \"Добро\"", () ->
+                new MailPage.CubeMenuElements()
+                .kindness()
+                .shouldBe(visible)
+                .click());
 
         Selenide.sleep(4000);
 
-        step("Переключиться на 2-ю вкладку браузера", () -> {
-            switchTo().window("VK Добро - благотворительность в России - сервис добрых дел");});
+        step("Переключиться на 2-ю вкладку браузера", () ->
+                switchTo()
+                .window("VK Добро - благотворительность в России - сервис добрых дел"));
 
-        step("Кликнуть на кнопку \"Помочь сейчас\"", () -> {
-            $x("//span[text()='Помочь сейчас']")
-                    .shouldBe(exist)
-                    .click();});
+        step("Кликнуть на кнопку \"Помочь сейчас\"", () ->
+                $x("//span[text()='Помочь сейчас']")
+                .shouldBe(exist)
+                .click());
 
-        step("Переключиться на iframe", () -> {
-            switchTo()
-                    .frame($(By.xpath("//iframe[@src='/projects/donate/recipients/?eventCategory=Header']")));});
+        step("Переключиться на iframe", () ->
+                switchTo()
+                .frame($(By.xpath("//iframe[@src='/projects/donate/recipients/?eventCategory=Header']"))));
 
-        step("Проверить что элементы появившегося окна видны", () -> {
-            $x("//div[child::h2[text()='Добавить платёж'] and child::span[text()='Кому вы хотите помочь']]")
-                    .shouldBe(visible);});
+        step("Проверить что элементы появившегося окна видны", () ->
+                $x("//div[child::h2[text()='Добавить платёж'] and child::span[text()='Кому вы хотите помочь']]")
+                .shouldBe(visible));
     }
 
     @Test
     @DisplayName("5. Проверка смены языка")
     void changeLanguage() {
 
-        step("Открыть страницу mail.ru", () -> {
-            open("https://mail.ru");
-        });
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
 
-        step("Закрыть всплывающее окно", () -> {
-            new MailPage().closePopUp()
-                    .shouldBe(visible)
-                    .click();
-        });
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
 
-        step("Кликнуть на значок кубик Рубика в главном меню", () -> {
-            new MailPage().cubeMenu()
-                    .shouldBe(visible)
-                    .click();
-        });
+        step("Кликнуть на значок кубик Рубика в главном меню", () ->
+                new MailPage().cubeMenu()
+                .shouldBe(visible)
+                .click());
 
-        step("В открывшемся окне меню кликнуть на \"Смотреть все\"", () -> {
-            new MailPage.CubeMenuElements()
-                    .watchAll()
-                    .shouldBe(visible)
-                    .click();});
+        step("В открывшемся окне меню кликнуть на \"Смотреть все\"", () ->
+                new MailPage.CubeMenuElements()
+                .watchAll()
+                .shouldBe(visible)
+                .click());
         Selenide.sleep(2000);
 
-        step("Переключиться на 2-ю вкладку браузера", () -> {
-            switchTo().window(1);});
+        step("Переключиться на 2-ю вкладку браузера", () ->
+                switchTo().window(1));
 
-        step("Кликнуть на кнопку смены языка в правом верхнем углу", () -> {
-            $x("//*[@id=\"__next\"]/header/div/div/form/button")
-                    .shouldBe(visible)
-                    .click();});
+        step("Кликнуть на кнопку смены языка в правом верхнем углу", () ->
+                $x("//*[@id=\"__next\"]/header/div/div/form/button")
+                .shouldBe(visible)
+                .click());
 
-        String title = step("Проверить что текст заголовка стал на английском языке", () -> {
-            return $x("//h1[@class='title-h2']//span")
-                    .shouldBe(visible)
-                    .getText();});
+        String title = step("Берём текст заголовка", () ->
+                $x("//h1[@class='title-h2']//span")
+                .shouldBe(visible)
+                .getText());
 
-        assertEquals("Our projects", title);
+        step("Проверяем, что текст заголовка стал на английском языке", () ->
+                assertEquals("Our projects", title));
+
     }
 
     @Test
     @DisplayName("6. Проверка появления подсказки с голосовым помощником")
     void helpMessage() {
-        step("Открыть страницу mail.ru", () -> {
-            open("https://mail.ru");
-        });
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
 
-        step("Закрыть всплывающее окно", () -> {
-            new MailPage().closePopUp()
-                    .shouldBe(visible)
-                    .click();
-        });
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
 
-        step("Кликнуть на значок кубик Рубика в главном меню", () -> {
-            new MailPage().cubeMenu()
-                    .shouldBe(visible)
-                    .click();
-        });
+        step("Кликнуть на значок кубик Рубика в главном меню", () ->
+                new MailPage().cubeMenu()
+                .shouldBe(visible)
+                .click());
 
-        step("В открывшемся окне меню кликнуть на \"Задачи\"", () -> {
-            new MailPage.CubeMenuElements()
-                    .tasks()
-                    .shouldBe(visible)
-                    .click();});
+        step("В открывшемся окне меню кликнуть на \"Задачи\"", () ->
+                new MailPage.CubeMenuElements()
+                .tasks()
+                .shouldBe(visible)
+                .click());
 
-        step("Переключиться на 2-ю вкладку браузера", () -> {
-            switchTo().window(1);});
+        step("Переключиться на 2-ю вкладку браузера", () ->
+                switchTo().window(1));
 
-        step("кликнуть на \"Помощь\" в footer", () -> {
-            $x("//a[contains(text(), 'Помощь')]")
-                    .shouldBe(visible)
-                    .click();});
+        step("кликнуть на \"Помощь\" в footer", () ->
+                $x("//a[contains(text(), 'Помощь')]")
+                .shouldBe(visible)
+                .click());
 
-        step("Переключиться на 3-ю вкладку браузера", () -> {
-            switchTo().window(2);});
+        step("Переключиться на 3-ю вкладку браузера", () ->
+                switchTo().window(2));
 
-        step("скрол к footer", () -> {
-            $(By.tagName("footer"))
-                    .scrollTo();});
+        step("проскролить к footer", () ->
+                $(By.tagName("footer"))
+                .scrollTo());
 
-        step("Проверить что сообщение с подсказкой голосового помощника видно", () -> {
-            $x("//span[contains(@class, 'marusia__balloon__text')]")
-                    .shouldBe(visible);});
+        step("Проверить что сообщение с подсказкой голосового помощника видно", () ->
+                $x("//span[contains(@class, 'marusia__balloon__text')]")
+                .shouldBe(visible));
     }
 }
