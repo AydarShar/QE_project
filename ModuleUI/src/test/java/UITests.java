@@ -2,6 +2,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -9,6 +10,7 @@ import patterns.MailPage;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverConditions.url;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,6 +20,11 @@ import static org.junit.jupiter.api.Assertions.*;
     {
         SelenideLogger.addListener(ALLURE_SELENIDE_LISTENER_NAME, new AllureSelenide()
                 .screenshots(true).savePageSource(false));
+    }
+
+    @BeforeEach
+    public void chromedriver() {
+        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
     }
 
     @AfterEach
@@ -46,8 +53,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @DisplayName("2. Проверка отображения погоды в Казани")
     void weatherInKazan() {
 
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
+        step("Открыть страницу mail.ru", () -> open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
                 new MailPage().closePopUp()
@@ -55,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 .click());
 
         step("Кликнуть на блок с погодой", () ->
-                $x("//div[@data-testid=\"weather\"]")
+                $x("//div[contains(@class, 'weather')]")
                 .shouldBe(visible)
                 .click());
 
@@ -68,9 +74,9 @@ import static org.junit.jupiter.api.Assertions.*;
                 .setValue("Казань")
                 .pressEnter());
 
-        step("Убедиться, что отображается погода в Казани", () ->
-                $x("//h1[text()='Прогноз погоды в Казани']")
-                .shouldBe(visible));
+        step("Проверяем, что перешли на страницу погоды в Казани", () ->
+                webdriver().shouldHave(url("https://pogoda.mail.ru/prognoz/kazan/")));
+
     }
 
     @Test
@@ -86,7 +92,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 .click());
 
         step("Нажать на шестеренку в правом верхнем углу окна", () ->
-                $x("//div[contains(@class, 'ph-settings svelte-1ke9xx5')]")
+                $x("//div[contains(@class,'ph-settings')]")
                 .shouldBe(visible)
                 .click());
 
@@ -127,11 +133,9 @@ import static org.junit.jupiter.api.Assertions.*;
                 .shouldBe(visible)
                 .click());
 
-        Selenide.sleep(4000);
-
         step("Переключиться на 2-ю вкладку браузера", () ->
                 switchTo()
-                .window("VK Добро - благотворительность в России - сервис добрых дел"));
+                .window(1));
 
         step("Кликнуть на кнопку \"Помочь сейчас\"", () ->
                 $x("//span[text()='Помочь сейчас']")
@@ -143,12 +147,12 @@ import static org.junit.jupiter.api.Assertions.*;
                 .frame($(By.xpath("//iframe[@src='/projects/donate/recipients/?eventCategory=Header']"))));
 
         step("Проверить что элементы появившегося окна видны", () ->
-                $x("//div[child::h2[text()='Добавить платёж'] and child::span[text()='Кому вы хотите помочь']]")
+                $x("//div[./h2[text()='Добавить платёж'] and ./span[text()='Кому вы хотите помочь']]")
                 .shouldBe(visible));
     }
 
     @Test
-    @DisplayName("5. Проверка смены языка")
+    @DisplayName("5. Проверка смены языка на английский")
     void changeLanguage() {
 
         step("Открыть страницу mail.ru", () ->
@@ -169,23 +173,20 @@ import static org.junit.jupiter.api.Assertions.*;
                 .watchAll()
                 .shouldBe(visible)
                 .click());
-        Selenide.sleep(2000);
 
         step("Переключиться на 2-ю вкладку браузера", () ->
                 switchTo().window(1));
 
         step("Кликнуть на кнопку смены языка в правом верхнем углу", () ->
-                $x("//*[@id=\"__next\"]/header/div/div/form/button")
+                $x("//button[@title='Сменить язык']")
                 .shouldBe(visible)
                 .click());
 
-        String title = step("Берём текст заголовка", () ->
+        String title = step("Проверяем, что текст заголовка стал на английском языке", () ->
                 $x("//h1[@class='title-h2']//span")
                 .shouldBe(visible)
                 .getText());
-
-        step("Проверяем, что текст заголовка стал на английском языке", () ->
-                assertEquals("Our projects", title));
+        assertEquals("Our projects", title);
 
     }
 
@@ -212,7 +213,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 .click());
 
         step("Переключиться на 2-ю вкладку браузера", () ->
-                switchTo().window(1));
+                switchTo().window("Задачи Mail.ru"));
 
         step("кликнуть на \"Помощь\" в footer", () ->
                 $x("//a[contains(text(), 'Помощь')]")
@@ -220,7 +221,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 .click());
 
         step("Переключиться на 3-ю вкладку браузера", () ->
-                switchTo().window(2));
+                switchTo().window("Задачи — Помощь Mail.ru"));
 
         step("проскролить к footer", () ->
                 $(By.tagName("footer"))
@@ -228,6 +229,104 @@ import static org.junit.jupiter.api.Assertions.*;
 
         step("Проверить что сообщение с подсказкой голосового помощника видно", () ->
                 $x("//span[contains(@class, 'marusia__balloon__text')]")
+                .shouldBe(visible));
+    }
+
+    @Test
+    @DisplayName("7. Проверка наличия французского языка в меню \"Игры\"")
+    void frenchLanguageInGames() {
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
+
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
+
+        step("кликнуть на \"Игры\" в главном меню", () ->
+                $$x("//a[text()='Игры']").get(0)
+                .shouldBe(visible)
+                .click());
+
+
+        step("Переключиться на 2-ю вкладку браузера", () ->
+                switchTo().window(1));
+
+        step("кликнуть иконку с разными языками", () ->
+                $x("//div[contains(@data-original-title, 'Язык')]")
+                .shouldBe(visible)
+                .click());
+
+        step("убедиться, что присутствует французский язык", () ->
+                $x("//a[contains(text(), 'Français')]")
+                .shouldBe(visible));
+    }
+
+    @Test
+    @DisplayName("8. Проверка входа с неверным именем пользователя")
+    void wrongUserName() {
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
+
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
+
+        step("кликнуть на \"Войти\" в правом верхнем углу окна", () ->
+                $x("//button[contains(text(), 'Войти')]")
+                .shouldBe(visible)
+                .click());
+
+        step("Переключиться на iframe", () ->
+                switchTo()
+                .frame($(By.xpath("//iframe[@class=\"ag-popup__frame__layout__iframe\"]"))));
+
+        step("в поле Имя аккаунта вводим \"SHJBbws1nsdn\"", () ->
+                $x("//input[@name='username']")
+                .shouldBe(exist)
+                .setValue("SHJBbws1nsdn")
+                .pressEnter());
+
+        step("проверяем, что появилась надпись \"Такой аккаунт не зарегистрирован\"", () ->
+                $x("//small[text()='Такой аккаунт не зарегистрирован']")
+                .shouldBe(visible));
+    }
+
+    @Test
+    @DisplayName("9. Проверка входа с неверным паролем")
+    void wrongPassword() {
+        step("Открыть страницу mail.ru", () ->
+                open("https://mail.ru"));
+
+        step("Закрыть всплывающее окно", () ->
+                new MailPage().closePopUp()
+                .shouldBe(visible)
+                .click());
+
+        step("кликнуть на \"Войти\" в правом верхнем углу окна", () ->
+                $x("//button[contains(text(), 'Войти')]")
+                .shouldBe(visible)
+                .click());
+
+        step("Переключиться на iframe", () ->
+                switchTo()
+                .frame($(By.xpath("//iframe[@class=\"ag-popup__frame__layout__iframe\"]"))));
+
+        step("в поле Имя аккаунта вводим \"Sharafetdin89\"", () ->
+                $x("//input[@name='username']")
+                .shouldBe(exist)
+                .setValue("Sharafetdin89")
+                .pressEnter());
+
+        step("в поле для пароля вводим \"DFUjguk\"", () ->
+                $x("//input[@name='password']")
+                .shouldBe(exist)
+                .setValue("DFUjguk")
+                .pressEnter());
+
+        step("проверяем, что появилось сообщение о неверном пароле", () ->
+                $x("//div[@data-text=\"Неверный пароль, попробуйте ещё раз\"]")
                 .shouldBe(visible));
     }
 }

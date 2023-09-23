@@ -5,10 +5,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class CarResponse {
+public class CarResponse extends CarRequest {
     private Integer id;
-    private String engineType;
-    private String mark;
-    private String model;
-    private BigDecimal price;
 }

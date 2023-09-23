@@ -3,9 +3,6 @@ package models.houses;
 import lombok.Data;
 
 @Data
-public class ParkingPlacesResponse {
+public class ParkingPlacesResponse extends ParkingPlacesRequest {
     private Integer id;
-    private Boolean isWarm;
-    private Boolean isCovered;
-    private Integer placesCount;
 }
