@@ -22,7 +22,6 @@
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <aspectj.version>1.9.19</aspectj.version>
         <allure.version>2.14.0</allure.version>
-<!--        <allure.report.directory>${project.build.directory}/allure-results</allure.report.directory>-->
     </properties>
 
         <dependencies>

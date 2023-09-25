@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import patterns.MailPage;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
@@ -56,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.*;
         step("Открыть страницу mail.ru", () -> open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
@@ -87,7 +86,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
@@ -118,18 +117,17 @@ import static org.junit.jupiter.api.Assertions.*;
                 open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
         step("Кликнуть на значок кубик Рубика в главном меню", () ->
-                new MailPage().cubeMenu()
+                $x("//*[@id=\"ph-whiteline\"]/div/nav/button")
                 .shouldBe(visible)
                 .click());
 
         step("В открывшемся окне меню кликнуть на \"Добро\"", () ->
-                new MailPage.CubeMenuElements()
-                .kindness()
+                $x("//span[contains(text(), 'Добро')]")
                 .shouldBe(visible)
                 .click());
 
@@ -159,18 +157,17 @@ import static org.junit.jupiter.api.Assertions.*;
                 open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
         step("Кликнуть на значок кубик Рубика в главном меню", () ->
-                new MailPage().cubeMenu()
+                $x("//*[@id=\"ph-whiteline\"]/div/nav/button")
                 .shouldBe(visible)
                 .click());
 
         step("В открывшемся окне меню кликнуть на \"Смотреть все\"", () ->
-                new MailPage.CubeMenuElements()
-                .watchAll()
+                $x("//span[contains(text(), 'Смотреть все')]")
                 .shouldBe(visible)
                 .click());
 
@@ -197,18 +194,17 @@ import static org.junit.jupiter.api.Assertions.*;
                 open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
         step("Кликнуть на значок кубик Рубика в главном меню", () ->
-                new MailPage().cubeMenu()
+                $x("//*[@id=\"ph-whiteline\"]/div/nav/button")
                 .shouldBe(visible)
                 .click());
 
         step("В открывшемся окне меню кликнуть на \"Задачи\"", () ->
-                new MailPage.CubeMenuElements()
-                .tasks()
+                $x("//span[contains(text(), 'Задачи')]")
                 .shouldBe(visible)
                 .click());
 
@@ -239,7 +235,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
@@ -269,7 +265,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
@@ -300,7 +296,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 open("https://mail.ru"));
 
         step("Закрыть всплывающее окно", () ->
-                new MailPage().closePopUp()
+                $x("//div[contains(@class, 'balloon__close')]")
                 .shouldBe(visible)
                 .click());
 
