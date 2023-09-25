@@ -49,23 +49,19 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-    @DisplayName("2. Проверка отображения погоды в Казани")
+    @DisplayName("2. Проверка страницы погоды в Казани")
     void weatherInKazan() {
 
-        step("Открыть страницу mail.ru", () -> open("https://mail.ru"));
+        MailSteps.openPage();
 
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
+        MailSteps.closePopUp();
 
         step("Кликнуть на блок с погодой", () ->
                 $x("//div[contains(@class, 'weather')]")
                 .shouldBe(visible)
                 .click());
 
-        step("Переключиться на 2-ю вкладку браузера", () ->
-                switchTo().window(1));
+        MailSteps.switchToSecondTab();
 
         step("В поле ввода вставить \"Казань\", нажать Enter", () ->
                 $x("//form[@action=\"/search/\"]//input[@type=\"text\"]")
@@ -81,14 +77,8 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("3. Проверка переключения на темную тему")
     void blackTheme() {
-
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
-
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
+        MailSteps.openPage();
+        MailSteps.closePopUp();
 
         step("Нажать на шестеренку в правом верхнем углу окна", () ->
                 $x("//div[contains(@class,'ph-settings')]")
@@ -112,28 +102,16 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("4. Проверка открытия окна для пожертвования")
     void donationWindow() {
-
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
-
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
-
-        step("Кликнуть на значок кубик Рубика в главном меню", () ->
-                $x("//*[@id=\"ph-whiteline\"]/div/nav/button")
-                .shouldBe(visible)
-                .click());
+        MailSteps.openPage();
+        MailSteps.closePopUp();
+        MailSteps.rubikCube();
 
         step("В открывшемся окне меню кликнуть на \"Добро\"", () ->
                 $x("//span[contains(text(), 'Добро')]")
                 .shouldBe(visible)
                 .click());
 
-        step("Переключиться на 2-ю вкладку браузера", () ->
-                switchTo()
-                .window(1));
+        MailSteps.switchToSecondTab();
 
         step("Кликнуть на кнопку \"Помочь сейчас\"", () ->
                 $x("//span[text()='Помочь сейчас']")
@@ -152,27 +130,16 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("5. Проверка смены языка на английский")
     void changeLanguage() {
-
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
-
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
-
-        step("Кликнуть на значок кубик Рубика в главном меню", () ->
-                $x("//*[@id=\"ph-whiteline\"]/div/nav/button")
-                .shouldBe(visible)
-                .click());
+        MailSteps.openPage();
+        MailSteps.closePopUp();
+        MailSteps.rubikCube();
 
         step("В открывшемся окне меню кликнуть на \"Смотреть все\"", () ->
                 $x("//span[contains(text(), 'Смотреть все')]")
                 .shouldBe(visible)
                 .click());
 
-        step("Переключиться на 2-ю вкладку браузера", () ->
-                switchTo().window(1));
+        MailSteps.switchToSecondTab();
 
         step("Кликнуть на кнопку смены языка в правом верхнем углу", () ->
                 $x("//button[@title='Сменить язык']")
@@ -190,25 +157,16 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("6. Проверка появления подсказки с голосовым помощником")
     void helpMessage() {
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
-
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
-
-        step("Кликнуть на значок кубик Рубика в главном меню", () ->
-                $x("//*[@id=\"ph-whiteline\"]/div/nav/button")
-                .shouldBe(visible)
-                .click());
+        MailSteps.openPage();
+        MailSteps.closePopUp();
+        MailSteps.rubikCube();
 
         step("В открывшемся окне меню кликнуть на \"Задачи\"", () ->
                 $x("//span[contains(text(), 'Задачи')]")
                 .shouldBe(visible)
                 .click());
 
-        step("Переключиться на 2-ю вкладку браузера", () ->
+        step("Переключиться на вкладку \"Задачи Mail.ru\"", () ->
                 switchTo().window("Задачи Mail.ru"));
 
         step("кликнуть на \"Помощь\" в footer", () ->
@@ -216,10 +174,10 @@ import static org.junit.jupiter.api.Assertions.*;
                 .shouldBe(visible)
                 .click());
 
-        step("Переключиться на 3-ю вкладку браузера", () ->
+        step("Переключиться на вкладку \"Задачи — Помощь Mail.ru\"", () ->
                 switchTo().window("Задачи — Помощь Mail.ru"));
 
-        step("проскролить к footer", () ->
+        step("Проскролить к footer", () ->
                 $(By.tagName("footer"))
                 .scrollTo());
 
@@ -231,29 +189,22 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("7. Проверка наличия французского языка в меню \"Игры\"")
     void frenchLanguageInGames() {
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
+        MailSteps.openPage();
+        MailSteps.closePopUp();
 
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
-
-        step("кликнуть на \"Игры\" в главном меню", () ->
+        step("Кликнуть на \"Игры\" в главном меню", () ->
                 $$x("//a[text()='Игры']").get(0)
                 .shouldBe(visible)
                 .click());
 
+        MailSteps.switchToSecondTab();
 
-        step("Переключиться на 2-ю вкладку браузера", () ->
-                switchTo().window(1));
-
-        step("кликнуть иконку с разными языками", () ->
+        step("Кликнуть иконку с разными языками", () ->
                 $x("//div[contains(@data-original-title, 'Язык')]")
                 .shouldBe(visible)
                 .click());
 
-        step("убедиться, что присутствует французский язык", () ->
+        step("Убедиться, что присутствует французский язык", () ->
                 $x("//a[contains(text(), 'Français')]")
                 .shouldBe(visible));
     }
@@ -261,30 +212,21 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("8. Проверка входа с неверным именем пользователя")
     void wrongUserName() {
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
-
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
-
-        step("кликнуть на \"Войти\" в правом верхнем углу окна", () ->
-                $x("//button[contains(text(), 'Войти')]")
-                .shouldBe(visible)
-                .click());
+        MailSteps.openPage();
+        MailSteps.closePopUp();
+        MailSteps.loginButton();
 
         step("Переключиться на iframe", () ->
                 switchTo()
                 .frame($(By.xpath("//iframe[@class=\"ag-popup__frame__layout__iframe\"]"))));
 
-        step("в поле Имя аккаунта вводим \"SHJBbws1nsdn\"", () ->
+        step("В поле Имя аккаунта вводим \"SHJBbws1nsdn\"", () ->
                 $x("//input[@name='username']")
                 .shouldBe(exist)
                 .setValue("SHJBbws1nsdn")
                 .pressEnter());
 
-        step("проверяем, что появилась надпись \"Такой аккаунт не зарегистрирован\"", () ->
+        step("Проверяем, что появилась надпись \"Такой аккаунт не зарегистрирован\"", () ->
                 $x("//small[text()='Такой аккаунт не зарегистрирован']")
                 .shouldBe(visible));
     }
@@ -292,18 +234,9 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("9. Проверка входа с неверным паролем")
     void wrongPassword() {
-        step("Открыть страницу mail.ru", () ->
-                open("https://mail.ru"));
-
-        step("Закрыть всплывающее окно", () ->
-                $x("//div[contains(@class, 'balloon__close')]")
-                .shouldBe(visible)
-                .click());
-
-        step("кликнуть на \"Войти\" в правом верхнем углу окна", () ->
-                $x("//button[contains(text(), 'Войти')]")
-                .shouldBe(visible)
-                .click());
+        MailSteps.openPage();
+        MailSteps.closePopUp();
+        MailSteps.loginButton();
 
         step("Переключиться на iframe", () ->
                 switchTo()
