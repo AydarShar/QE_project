@@ -51,9 +51,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("2. Проверка страницы погоды в Казани")
     void weatherInKazan() {
-
         MailSteps.openPage();
-
         MailSteps.closePopUp();
 
         step("Кликнуть на блок с погодой", () ->
