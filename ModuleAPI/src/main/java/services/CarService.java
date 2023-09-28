@@ -27,7 +27,7 @@ public class CarService extends RestService {
         return given().spec(REQ_SPEC).body(rq).put("/car/" + String.valueOf(rs.getId())).as(CarResponse.class);
     }
 
-    public ValidatableResponse putCarError(CarRequest rq) {
-        return given().spec(REQ_SPEC).body(rq).put("/car/1").then().statusCode(409);
+    public ValidatableResponse putCarError(CarRequest rq, CarResponse rs) {
+        return given().spec(REQ_SPEC).body(rq).put("/car/" + String.valueOf(rs.getId())).then().statusCode(409);
     }
 }

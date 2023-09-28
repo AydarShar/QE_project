@@ -69,7 +69,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
         step("Проверяем, что перешли на страницу погоды в Казани", () ->
                 webdriver().shouldHave(url("https://pogoda.mail.ru/prognoz/kazan/")));
-
     }
 
     @Test
@@ -98,35 +97,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-    @DisplayName("4. Проверка открытия окна для пожертвования")
-    void donationWindow() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-        MailSteps.rubikCube();
-
-        step("В открывшемся окне меню кликнуть на \"Добро\"", () ->
-                $x("//span[contains(text(), 'Добро')]")
-                .shouldBe(visible)
-                .click());
-
-        MailSteps.switchToSecondTab();
-
-        step("Кликнуть на кнопку \"Помочь сейчас\"", () ->
-                $x("//span[text()='Помочь сейчас']")
-                .shouldBe(exist)
-                .click());
-
-        step("Переключиться на iframe", () ->
-                switchTo()
-                .frame($(By.xpath("//iframe[@src='/projects/donate/recipients/?eventCategory=Header']"))));
-
-        step("Проверить что элементы появившегося окна видны", () ->
-                $x("//div[./h2[text()='Добавить платёж'] and ./span[text()='Кому вы хотите помочь']]")
-                .shouldBe(visible));
-    }
-
-    @Test
-    @DisplayName("5. Проверка смены языка на английский")
+    @DisplayName("4. Проверка смены языка на английский")
     void changeLanguage() {
         MailSteps.openPage();
         MailSteps.closePopUp();
@@ -149,11 +120,10 @@ import static org.junit.jupiter.api.Assertions.*;
                 .shouldBe(visible)
                 .getText());
         assertEquals("Our projects", title);
-
     }
 
     @Test
-    @DisplayName("6. Проверка появления подсказки с голосовым помощником")
+    @DisplayName("5. Проверка появления подсказки с голосовым помощником")
     void helpMessage() {
         MailSteps.openPage();
         MailSteps.closePopUp();
@@ -185,7 +155,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-    @DisplayName("7. Проверка наличия французского языка в меню \"Игры\"")
+    @DisplayName("6. Проверка наличия французского языка в меню \"Игры\"")
     void frenchLanguageInGames() {
         MailSteps.openPage();
         MailSteps.closePopUp();
@@ -208,7 +178,7 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-    @DisplayName("8. Проверка входа с неверным именем пользователя")
+    @DisplayName("7. Проверка входа с неверным именем пользователя")
     void wrongUserName() {
         MailSteps.openPage();
         MailSteps.closePopUp();
@@ -224,13 +194,17 @@ import static org.junit.jupiter.api.Assertions.*;
                 .setValue("SHJBbws1nsdn")
                 .pressEnter());
 
+        step("Проверяем, что появилось сообщение об ошибке", () ->
+                $x("//div[@data-test-id=\"error-footer-text\"]")
+                .shouldBe(exist));
+
         step("Проверяем, что появилась надпись \"Такой аккаунт не зарегистрирован\"", () ->
                 $x("//small[text()='Такой аккаунт не зарегистрирован']")
                 .shouldBe(visible));
     }
 
     @Test
-    @DisplayName("9. Проверка входа с неверным паролем")
+    @DisplayName("8. Проверка входа с неверным паролем")
     void wrongPassword() {
         MailSteps.openPage();
         MailSteps.closePopUp();

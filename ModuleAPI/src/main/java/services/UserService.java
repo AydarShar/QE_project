@@ -29,6 +29,12 @@ public class UserService extends RestService {
         return given().spec(REQ_SPEC).body(rq).put("/user/" + String.valueOf(rs.getId())).as(UserResponse.class);
     }
 
+    public UserResponse postUserAndCar(UserResponse userRs, CarResponse carRs) {
+        return given().spec(REQ_SPEC)
+                .post("/user/" + String.valueOf(userRs.getId()) + "/buyCar/" + String.valueOf(carRs.getId()))
+                .as(UserResponse.class);
+    }
+
     public ValidatableResponse deleteUser(UserResponse rs) {
         return given().spec(REQ_SPEC).delete("/user/" + String.valueOf(rs.getId()))
                 .then().statusCode(204);

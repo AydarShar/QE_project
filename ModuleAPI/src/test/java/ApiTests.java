@@ -1,5 +1,3 @@
-import io.restassured.RestAssured;
-import io.restassured.parsing.Parser;
 import jdk.jfr.Description;
 import models.cars.CarRequest;
 import models.cars.CarResponse;
@@ -9,10 +7,8 @@ import org.junit.jupiter.api.*;
 import models.users.UserRequest;
 import models.users.UserResponse;
 import services.UserService;
-import utils.CarGenerator;
-import utils.HouseGenerator;
-import utils.RestWrapper;
-import utils.UserGenerator;
+import utils.*;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -25,9 +21,7 @@ public class ApiTests {
     private static RestWrapper api;
     @BeforeAll
     public static void setup() throws IOException {
-        RestAssured.defaultParser = Parser.JSON;
-
-        System.getProperties().load(ClassLoader.getSystemResourceAsStream("application.properties"));
+        Configuration.setup();
         api = RestWrapper.loginAs(System.getProperty("userLogin"), System.getProperty("userPassword"));
     }
 
@@ -123,9 +117,14 @@ public class ApiTests {
     @DisplayName("9. PUT/car/{carId} - целостное изменение (перезапись) объекта")
     @Description("Проверяем, что сервер возвращает 409 ответ при наличии первичной взаимосвязи у удаляемой сущности")
     public void putCarError() {
-        CarRequest rq = CarGenerator.getFirstCar();
-        step("Проверяем, что сервер вернул 409 ответ", () ->
-                api.car.putCarError(rq));
+        UserRequest userRq = UserGenerator.getFirstUser();
+        UserResponse userRs = api.user.createUser(userRq);
+        CarRequest carRq = CarGenerator.getFirstCar();
+        CarResponse carRs = api.car.createCar(carRq);
+        step("Установка первичной взаимосвязи объектов", () ->
+                api.user.postUserAndCar(userRs, carRs));
+        step("Проверяем, что сервер вернул 409 ответ при попытке put запроса", () ->
+                api.car.putCarError(carRq, carRs));
     }
 
     @Test
