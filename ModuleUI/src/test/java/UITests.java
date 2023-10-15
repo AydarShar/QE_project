@@ -1,154 +1,76 @@
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.logevents.SelenideLogger;
-import io.qameta.allure.selenide.AllureSelenide;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
+import pages.*;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverConditions.url;
 import static io.qameta.allure.Allure.step;
 import static org.junit.jupiter.api.Assertions.*;
 
-    public class UITests {
-    private static final String ALLURE_SELENIDE_LISTENER_NAME = "AllureSelenide";
-
-    {
-        SelenideLogger.addListener(ALLURE_SELENIDE_LISTENER_NAME, new AllureSelenide()
-                .screenshots(true).savePageSource(false));
-    }
-
-    @BeforeEach
-    public void chromedriver() {
-        System.setProperty("webdriver.chrome.driver","/usr/local/bin/chromedriver");
-    }
-
-    @AfterEach
-    public void closeWindow() {
-        Selenide.closeWindow(); // новая сессия для каждого теста
-    }
+    public class UITests extends BaseTest {
+    private final static String MAIL_URL = "https://mail.ru";
+    private final static String MAIL_SEARCH = "mail.ru";
+    private final static String GOOGLE_URL = "https://www.google.ru/";
+    private final static String KAZAN = "Казань";
+    private final static String KAZAN_WEATHER_URL = "https://pogoda.mail.ru/prognoz/kazan/";
+    private final static String EXPECTED_BG_COLOR = "rgba(25, 25, 26, 1)";
+    private final static String TITLE_TEXT = "Our projects";
+    private final static String TAG_NAME = "footer";
+    private final static String LOGIN_IFRAME = "//iframe[@class=\"ag-popup__frame__layout__iframe\"]";
+    private final static String NOT_VALID_USER_NAME = "SgfdisxxUZ&3";
+    private final static String USER_NAME = "Sharafetdin89";
+    private final static String NOT_VALID_PASSWORD = "SHJBbws1nsdn";
 
     @Test
     @DisplayName("1. Проверка поиска mail.ru через Google")
     void findMailRu() {
-
-        step("Открыть google.ru", () -> open("https://www.google.ru/"));
-
-        step("В поле ввода вставить \"mail\", нажать Enter",
-                $x("//textarea[contains(@title,'Поиск')]")
-                .shouldBe(visible)
-                .setValue("mail.ru")::pressEnter);
-
-        step("Найти сайт mail.ru, кликнуть по нему", () ->
-                $x("//a[contains(@href,'https://mail.ru')]")
-                .shouldBe(visible)
-                .click());
+        UISteps.openWebsite(GOOGLE_URL);
+        Assertions.assertTrue(new GooglePage().search(MAIL_SEARCH).findLink());
     }
 
     @Test
     @DisplayName("2. Проверка страницы погоды в Казани")
     void weatherInKazan() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-
-        step("Кликнуть на блок с погодой", () ->
-                $x("//div[contains(@class, 'weather')]")
-                .shouldBe(visible)
-                .click());
-
-        MailSteps.switchToSecondTab();
-
-        step("В поле ввода вставить \"Казань\", нажать Enter", () ->
-                $x("//form[@action=\"/search/\"]//input[@type=\"text\"]")
-                .shouldBe(visible)
-                .setValue("Казань")
-                .pressEnter());
-
-        step("Проверяем, что перешли на страницу погоды в Казани", () ->
-                webdriver().shouldHave(url("https://pogoda.mail.ru/prognoz/kazan/")));
+        UISteps.openWebsite(MAIL_URL);
+        new MainPage().clickOnWeather();
+        UISteps.switchToTab(1);
+        new WeatherPage().setCityName(KAZAN);
+        assertTrue(UISteps.checkUrl(KAZAN_WEATHER_URL));
     }
 
     @Test
     @DisplayName("3. Проверка переключения на темную тему")
     void blackTheme() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-
-        step("Нажать на шестеренку в правом верхнем углу окна", () ->
-                $x("//div[contains(@class,'ph-settings')]")
-                .shouldBe(visible)
-                .click());
-
-        step("В открывшемся окне настроек выбрать тёмную тему", () ->
-                $x("//label[@for=\"choice-dark\"]")
-                .shouldBe(visible)
-                .click());
-
-        String colorValue = step("Взять фоновый цвет header", () ->
-                $x("//div[contains(@class, 'headline headline_white')]")
-                .shouldBe(visible)
-                .getCssValue("background-color"));
-
-        step("Проверить, что фоновый цвет header тёмный", () ->
-                assertEquals("rgba(25, 25, 26, 1)", colorValue));
+        UISteps.openWebsite(MAIL_URL);
+        new MainPage().pushGearWheel();
+        new MainPage().chooseDarkTheme();
+        step("Проверяем, что фоновый цвет header тёмный", () ->
+                assertEquals(EXPECTED_BG_COLOR, new MainPage().getHeaderColor()));
     }
 
     @Test
     @DisplayName("4. Проверка смены языка на английский")
     void changeLanguage() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-        MailSteps.rubikCube();
-
-        step("В открывшемся окне меню кликнуть на \"Смотреть все\"", () ->
-                $x("//span[contains(text(), 'Смотреть все')]")
-                .shouldBe(visible)
-                .click());
-
-        MailSteps.switchToSecondTab();
-
-        step("Кликнуть на кнопку смены языка в правом верхнем углу", () ->
-                $x("//button[@title='Сменить язык']")
-                .shouldBe(visible)
-                .click());
-
-        String title = step("Проверяем, что текст заголовка стал на английском языке", () ->
-                $x("//h1[@class='title-h2']//span")
-                .shouldBe(visible)
-                .getText());
-        assertEquals("Our projects", title);
+        UISteps.openWebsite(MAIL_URL);
+        new MainPage().showAllProjects();
+        new MainPage().goToWatchAll();
+        UISteps.switchToTab(1);
+        new AllProjectsPage().changeLanguage();
+        step("Проверяем, что текст заголовка стал на английском языке", () ->
+                assertEquals(TITLE_TEXT, new AllProjectsPage().getTitleText()));
     }
 
     @Test
     @DisplayName("5. Проверка появления подсказки с голосовым помощником")
     void helpMessage() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-        MailSteps.rubikCube();
-
-        step("В открывшемся окне меню кликнуть на \"Задачи\"", () ->
-                $x("//span[contains(text(), 'Задачи')]")
-                .shouldBe(visible)
-                .click());
-
-        step("Переключиться на вкладку \"Задачи Mail.ru\"", () ->
-                switchTo().window("Задачи Mail.ru"));
-
-        step("кликнуть на \"Помощь\" в footer", () ->
-                $x("//a[contains(text(), 'Помощь')]")
-                .shouldBe(visible)
-                .click());
-
-        step("Переключиться на вкладку \"Задачи — Помощь Mail.ru\"", () ->
-                switchTo().window("Задачи — Помощь Mail.ru"));
-
-        step("Проскролить к footer", () ->
-                $(By.tagName("footer"))
-                .scrollTo());
-
+        UISteps.openWebsite(MAIL_URL);
+        new MainPage().showAllProjects();
+        new MainPage().goToTasks();
+        UISteps.switchToTab(1);
+        new TasksPage().goToHelp();
+        UISteps.switchToTab(2);
+        UISteps.scrollToTag(TAG_NAME);
         step("Проверить что сообщение с подсказкой голосового помощника видно", () ->
                 $x("//span[contains(@class, 'marusia__balloon__text')]")
                 .shouldBe(visible));
@@ -157,77 +79,31 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     @DisplayName("6. Проверка наличия французского языка в меню \"Игры\"")
     void frenchLanguageInGames() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-
-        step("Кликнуть на \"Игры\" в главном меню", () ->
-                $$x("//a[text()='Игры']").get(0)
-                .shouldBe(visible)
-                .click());
-
-        MailSteps.switchToSecondTab();
-
-        step("Кликнуть иконку с разными языками", () ->
-                $x("//div[contains(@data-original-title, 'Язык')]")
-                .shouldBe(visible)
-                .click());
-
-        step("Убедиться, что присутствует французский язык", () ->
-                $x("//a[contains(text(), 'Français')]")
-                .shouldBe(visible));
+        UISteps.openWebsite(MAIL_URL);
+        new MainPage().goToGames();
+        UISteps.switchToTab(1);
+        new GamesPage().clickOnLanguages();
+        assertTrue(new GamesPage().frenchVisible());
     }
 
     @Test
     @DisplayName("7. Проверка входа с неверным именем пользователя")
     void wrongUserName() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-        MailSteps.loginButton();
-
-        step("Переключиться на iframe", () ->
-                switchTo()
-                .frame($(By.xpath("//iframe[@class=\"ag-popup__frame__layout__iframe\"]"))));
-
-        step("В поле Имя аккаунта вводим \"SHJBbws1nsdn\"", () ->
-                $x("//input[@name='username']")
-                .shouldBe(exist)
-                .setValue("SHJBbws1nsdn")
-                .pressEnter());
-
-        step("Проверяем, что появилось сообщение об ошибке", () ->
-                $x("//div[@data-test-id=\"error-footer-text\"]")
-                .shouldBe(exist));
-
-        step("Проверяем, что появилась надпись \"Такой аккаунт не зарегистрирован\"", () ->
-                $x("//small[text()='Такой аккаунт не зарегистрирован']")
-                .shouldBe(visible));
+        UISteps.openWebsite(MAIL_URL);
+        new MainPage().login();
+        UISteps.switchToIframeByXpath(LOGIN_IFRAME);
+        new MainPage().setUserName(NOT_VALID_USER_NAME);
+        assertTrue(new MainPage().existErrorMessage());
     }
 
     @Test
     @DisplayName("8. Проверка входа с неверным паролем")
     void wrongPassword() {
-        MailSteps.openPage();
-        MailSteps.closePopUp();
-        MailSteps.loginButton();
-
-        step("Переключиться на iframe", () ->
-                switchTo()
-                .frame($(By.xpath("//iframe[@class=\"ag-popup__frame__layout__iframe\"]"))));
-
-        step("в поле Имя аккаунта вводим \"Sharafetdin89\"", () ->
-                $x("//input[@name='username']")
-                .shouldBe(exist)
-                .setValue("Sharafetdin89")
-                .pressEnter());
-
-        step("в поле для пароля вводим \"DFUjguk\"", () ->
-                $x("//input[@name='password']")
-                .shouldBe(exist)
-                .setValue("DFUjguk")
-                .pressEnter());
-
-        step("проверяем, что появилось сообщение о неверном пароле", () ->
-                $x("//div[@data-text=\"Неверный пароль, попробуйте ещё раз\"]")
-                .shouldBe(visible));
+        UISteps.openWebsite(MAIL_URL);
+        new MainPage().login();
+        UISteps.switchToIframeByXpath(LOGIN_IFRAME);
+        new MainPage().setUserName(USER_NAME);
+        new MainPage().setPassword(NOT_VALID_PASSWORD);
+        assertTrue(new LoginPage().checkErrorMessage());
     }
 }
