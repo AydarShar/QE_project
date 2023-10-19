@@ -22,7 +22,7 @@ public class CarService {
         return given().body(rq).put("/car/" + String.valueOf(rs.getId())).as(CarResponse.class);
     }
 
-    public ValidatableResponse putCarError(CarRequest rq, CarResponse rs) {
-        return given().body(rq).put("/car/" + String.valueOf(rs.getId())).then().statusCode(409);
+    public ValidatableResponse putCarCheckStatus(CarRequest rq, CarResponse rs, int status) {
+        return given().body(rq).put("/car/" + String.valueOf(rs.getId())).then().statusCode(status);
     }
 }

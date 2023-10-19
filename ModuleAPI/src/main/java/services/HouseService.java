@@ -23,8 +23,8 @@ public class HouseService {
         return given().body(rq).put("/house/" + String.valueOf(rs.getId())).as(HouseResponse.class);
     }
 
-    public ValidatableResponse deleteHouse(HouseResponse rs) {
+    public ValidatableResponse deleteHouse(HouseResponse rs, int status) {
         return given().delete("/house/" + String.valueOf(rs.getId()))
-                .then().statusCode(204);
+                .then().statusCode(status);
     }
 }

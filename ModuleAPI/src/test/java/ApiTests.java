@@ -1,4 +1,4 @@
-import io.restassured.RestAssured;
+
 import jdk.jfr.Description;
 import models.cars.CarRequest;
 import models.cars.CarResponse;
@@ -11,7 +11,6 @@ import services.CarService;
 import services.HouseService;
 import services.UserService;
 import utils.*;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -21,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ApiTests {
-    private static RestWrapper api;
     @BeforeAll
     public static void setup() throws IOException {
         Configuration.setup();
@@ -69,7 +67,7 @@ public class ApiTests {
         UserRequest rq = UserGenerator.getFirstUser();
         UserResponse rs = new UserService().createUser(rq);
         step("Проверяем, что сервер вернул 204 ответ", () ->
-                new UserService().deleteUser(rs));
+                new UserService().deleteUserCheckStatus(rs, 204));
     }
 
     @Test
@@ -79,7 +77,7 @@ public class ApiTests {
         UserRequest rq = UserGenerator.getFirstUser();
         UserResponse rs = new UserService().createUser(rq);
         step("Проверяем, что сервер вернул 403 ответ", () ->
-                new UserService().deleteUserError(rs));
+                new UserService().deleteUserWithoutAuth(rs, 403));
     }
 
     @Test
@@ -127,7 +125,7 @@ public class ApiTests {
         step("Установка первичной взаимосвязи объектов", () ->
                 new UserService().postUserAndCar(userRs, carRs));
         step("Проверяем, что сервер вернул 409 ответ при попытке put запроса", () ->
-                new CarService().putCarError(carRq, carRs));
+                new CarService().putCarCheckStatus(carRq, carRs, 409));
     }
 
     @Test
@@ -170,6 +168,6 @@ public class ApiTests {
         HouseRequest rq = HouseGenerator.getFirstHouse();
         HouseResponse rs = new HouseService().createHouse(rq);
         step("Проверяем, что сервер вернул 204 ответ", () ->
-                new HouseService().deleteHouse(rs));
+                new HouseService().deleteHouse(rs, 204));
     }
 }

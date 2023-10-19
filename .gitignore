@@ -161,3 +161,9 @@ buildNumber.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,intellij
 /.allure/
+/ModuleUI/build/reports/
+/ModuleAPI/allure-results/
+/ModuleAPI/src/main/resources/
+/ModuleAPI/ModuleAPI.iml
+/ModuleUI/ModuleUI.iml
+/QE_project.iml

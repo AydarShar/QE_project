@@ -1,8 +1,6 @@
 package utils;
-
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
-
 import java.io.IOException;
 
 public class Configuration {

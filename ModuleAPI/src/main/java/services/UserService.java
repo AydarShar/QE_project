@@ -31,18 +31,18 @@ public class UserService {
                 .as(UserResponse.class);
     }
 
-    public ValidatableResponse deleteUser(UserResponse rs) {
+    public ValidatableResponse deleteUserCheckStatus(UserResponse rs, int status) {
         return given().delete("/user/" + String.valueOf(rs.getId()))
-                .then().statusCode(204);
+                .then().statusCode(status);
     }
 
-    public ValidatableResponse deleteUserError(UserResponse rs) {
+    public ValidatableResponse deleteUserWithoutAuth(UserResponse rs, int status) {
         return given().spec(RestAssured.requestSpecification
                         .header("", System.getProperty("userLogin"), "werw")
                         .baseUri(RestWrapper.URL)
                         .contentType("application/json")
                         .filter(new AllureRestAssured()))
                       .delete("/user/" + String.valueOf(rs.getId()))
-                      .then().statusCode(403);
+                      .then().statusCode(status);
     }
 }
